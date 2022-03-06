@@ -110,6 +110,7 @@ const TPixel RED = tigrRGB(255, 0, 0);
 const TPixel BLUE = tigrRGB(0, 0, 255);
 const TPixel GREEN = tigrRGB(0, 255, 0);
 const TPixel BLACK = tigrRGB(0, 0, 0);
+const TPixel GRAY = tigrRGB(200, 200, 200);
 
 #define PI 3.1415926
 #define TAU 6.2831853
@@ -121,8 +122,10 @@ int main(void){
     Slider centerRad(10, 10, 200, 10, 110, 1);
     Slider sideRad(10, 25, 200, 10, 110, 1);
     Slider angleSlider(10, 40, 200, 0, TAU, PI/100);
+    Slider incrSlider(10, 55, 200, 10, 100, 1);
+    Slider passesSlider(10, 70, 200, 1, 10, 1);
 
-    CheckBox cb(10, 60, 15);
+    CheckBox cb(10, 85, 15);
 
     double angle = 0;
 
@@ -131,14 +134,29 @@ int main(void){
 
         centerRad.draw(screen);
         centerRad.update(screen);
+        tigrPrint(screen, tfont, 220, 10, GRAY, "CENTER RADIUS");
+
         sideRad.draw(screen);
         sideRad.update(screen);
+        tigrPrint(screen, tfont, 220, 25, GRAY, "OUTER RADIUS");
+
         angleSlider.draw(screen);
         angleSlider.update(screen);
+        tigrPrint(screen, tfont, 220, 40, GRAY, "CIRCLE POSITION");
+
+        incrSlider.draw(screen);
+        incrSlider.update(screen);
+        tigrPrint(screen, tfont, 220, 55, GRAY, "DEFINITION");
+
+        passesSlider.draw(screen);
+        passesSlider.update(screen);
+        tigrPrint(screen, tfont, 220, 70, GRAY, "PASSES");
 
         cb.draw(screen);
         cb.update(screen);
+        tigrPrint(screen, tfont, 30, 88, GRAY, "TOGGLE LINES");
 
+        double incr = PI/incrSlider.getVal();
         const double crad = centerRad.getVal();
         const double srad = sideRad.getVal();
 
@@ -151,19 +169,21 @@ int main(void){
         tigrCircle(screen, endx=cos(angle)*(crad + srad)+320,
                     endy=sin(angle)*(crad + srad)+160, srad, BLUE);
 
-        tigrLine(screen, endx, endy, endx + cos(angle+angle)*srad, endy + sin(angle+angle)*srad, BLACK);
+        double ratio = crad > srad ? crad/srad : srad/crad;
 
-        /*if (cb.getVal()){
-            int px = cos(0)*crad + cos(0)*srad + 320;
-            int py = sin(0)*crad + sin(0)*srad + 160;
-            for (double i = PI/10; i < TAU; i+=PI/10){
-                int cx = cos(i)*crad + cos(i+i)*srad + 320;
-                int cy = sin(i)*crad + sin(i+i)*srad + 160;
+        tigrLine(screen, endx, endy, endx + cos(angle*ratio)*srad, endy + sin(angle*ratio)*srad, BLACK);
+
+        if (cb.getVal()){
+            int px = (cos(0)*srad) + (cos(0)*(crad+srad)) + 320;
+            int py = (sin(0)*srad) + (sin(0)*(crad+srad)) + 160;
+            for (double i = incr; i < TAU*passesSlider.getVal(); i+=incr){
+                double cx = (cos(i*ratio)*srad) + (cos(i)*(crad+srad)) + 320;
+                double cy = (sin(i*ratio)*srad) + (sin(i)*(crad+srad)) + 160;
                 tigrLine(screen, px, py, cx, cy, GREEN);
                 px = cx;
                 py = cy;
             }
-        }*/
+        }
 
         tigrUpdate(screen);
     }
