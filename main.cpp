@@ -121,7 +121,7 @@ int main(void){
 
     Slider centerRad(10, 10, 200, 10, 110, 1);
     Slider sideRad(10, 25, 200, 10, 110, 1);
-    Slider angleSlider(10, 40, 200, 0, TAU, PI/100);
+    Slider angleSlider(10, 40, 600, 0, TAU*10, PI/1000);
     Slider incrSlider(10, 55, 200, 10, 100, 1);
     Slider passesSlider(10, 70, 200, 1, 10, 1);
 
@@ -142,7 +142,7 @@ int main(void){
 
         angleSlider.draw(screen);
         angleSlider.update(screen);
-        tigrPrint(screen, tfont, 220, 40, GRAY, "CIRCLE POSITION");
+        tigrPrint(screen, tfont, 500, 25, GRAY, "CIRCLE POSITION");
 
         incrSlider.draw(screen);
         incrSlider.update(screen);
